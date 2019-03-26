@@ -282,13 +282,14 @@ export default class UploadTemplatePanel extends Component {
                 </div>
 
                 <div className={classes.container}>
+                    <Chip label=" Editor Text styles" className={classes.margin} />
                     <TextField
                         id="outlined-simple-start-adornment"
                         className={classNames(classes.margin, classes.textField)}
                         variant="outlined"
-                        label="With outlined TextField"
+                        label="Text Color"
                         InputProps={{
-                            startAdornment: <InputAdornment position="start">Kg</InputAdornment>,
+                            startAdornment: <InputAdornment position="start">#</InputAdornment>,
                         }}
                     />
 
@@ -296,11 +297,11 @@ export default class UploadTemplatePanel extends Component {
                         select
                         className={classNames(classes.margin, classes.textField)}
                         variant="outlined"
-                        label="With Select"
-                        value={this.state.weightRange}
-                        onChange={this.handleChange('weightRange')}
+                        label="Background Color"
+                        value={this.state.backgroundColor}
+                        onChange={this.handleChange('BackgroundColor')}
                         InputProps={{
-                            startAdornment: <InputAdornment position="start">Kg</InputAdornment>,
+                            startAdornment: <InputAdornment position="start">#</InputAdornment>,
                         }}
                     >
                         {xRanges.map(option => (
@@ -313,24 +314,21 @@ export default class UploadTemplatePanel extends Component {
                         id="outlined-adornment-amount"
                         className={classNames(classes.margin, classes.textField)}
                         variant="outlined"
-                        label="Amount"
-                        value={this.state.amount}
-                        onChange={this.handleChange('amount')}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                        }}
+                        label="Font Name"
+                        value={this.state.fontName}
+                        onChange={this.handleChange('fontName')}
                     />
 
                     <TextField
                         id="outlined-adornment-weight"
                         className={classNames(classes.margin, classes.textField)}
                         variant="outlined"
-                        label="Weight"
-                        value={this.state.weight}
-                        onChange={this.handleChange('weight')}
+                        label="Font Size"
+                        value={this.state.fontSize}
+                        onChange={this.handleChange('fontSize')}
                         helperText="Weight"
                         InputProps={{
-                            endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                            endAdornment: <InputAdornment position="end">px</InputAdornment>,
                         }}
                     />
 
@@ -338,43 +336,13 @@ export default class UploadTemplatePanel extends Component {
                         id="outlined-adornment-password"
                         className={classNames(classes.margin, classes.textField)}
                         variant="outlined"
-                        type={this.state.showPassword ? 'text' : 'password'}
-                        label="Password"
-                        value={this.state.password}
-                        onChange={this.handleChange('password')}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="Toggle password visibility"
-                                        onClick={this.handleClickShowPassword}
-                                    >
-                                        {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
+                        label="Text Align"
+                        value={this.state.textAlign}
+                        onChange={this.handleChange('textAlign')}
                     />
                 </div>
                 <div className={classes.container}>
-                    <TextField
-                        select
-                        id="outlined-simple-start-adornment"
-                        className={classNames(classes.margin, classes.textField)}
-                        variant="outlined"
-                        label="default Text 1"
-                        value={this.state.defaultText1}
-                        onChange={this.handleChange('defaultText1')}
-                    >
-                        {defaultText.map(option => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </div>
-
-                <div className={classes.container}>
+                    <Chip label=" Text Positions" className={classes.margin} />
                     <TextField
                         select
                         id="outlined-simple-start-adornment"
@@ -393,13 +361,13 @@ export default class UploadTemplatePanel extends Component {
                             </MenuItem>
                         ))}
                     </TextField>
-
                     <TextField
                         select
+                        id="outlined-simple-start-adornment"
                         className={classNames(classes.margin, classes.textField)}
                         variant="outlined"
                         label="position Y"
-                        value={this.state.positionY}
+                        value={this.state.positionX}
                         onChange={this.handleChange('positionY')}
                         InputProps={{
                             endAdornment: <InputAdornment position="start">px</InputAdornment>,
@@ -412,6 +380,54 @@ export default class UploadTemplatePanel extends Component {
                         ))}
                     </TextField>
                 </div>
+
+                <div className={classes.container}>
+                    <Chip label="Text Content" className={classes.margin} />
+                    <TextField
+                        select
+                        id="outlined-simple-start-adornment"
+                        className={classNames(classes.margin, classes.textField)}
+                        variant="outlined"
+                        label="Text Content"
+                        value={this.state.positionX}
+                        onChange={this.handleChange('Text1')}
+                    >
+                        {defaultText.map(option => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+
+                </div>
+                <div className={classes.container}>
+                    <Chip label="Image Size" className={classes.margin} />
+                    <TextField
+                        id="outlined-adornment-size"
+                        className={classNames(classes.margin, classes.textField)}
+                        variant="outlined"
+                        label="Image Height"
+                        value={this.state.height}
+                        onChange={this.handleChange('Height')}
+                        helperText="Height"
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                        }}
+                    />
+                    <TextField
+                        id="outlined-adornment-size"
+                        className={classNames(classes.margin, classes.textField)}
+                        variant="outlined"
+                        label="Image Width"
+                        value={this.state.width}
+                        onChange={this.handleChange('Width')}
+                        helperText="Width"
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                        }}
+                    />
+                </div>
+
                 <input
                     accept="image/*"
                     className={classes.input}

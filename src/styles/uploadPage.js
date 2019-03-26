@@ -8,12 +8,22 @@ export const uploadStyles = theme => ({
         zIndex: 1,
         overflow: 'hidden',
     },
-    container:{
+    container: {
         display: 'flex',
         flexWrap: 'wrap',
+        marginTop: theme.spacing.unit,
+        borderStyle: 'dotted',
+        borderWidth: 1,
+        borderColor: 'gray',
     },
     textField: {
-        flexBasis: 400,
+        flexBasis: 200,
+    },
+    textLongField: {
+        flexBasis: 500,
+    },
+    margin: {
+        margin: theme.spacing.unit,
     },
     appFrame: {
         position: 'relative',
@@ -50,7 +60,7 @@ export const uploadStyles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
-        textTransform:'capitalize',
+        textTransform: 'capitalize',
     },
     input: {
         display: 'none',
