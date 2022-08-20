@@ -1,4 +1,5 @@
 const cardsType = {
+    all:["allCards"],
     holiday: ["christmas", "newYear", "easter"],
     birthday: ["kids", "forHer", "forHim"],
     thankYou: ["general", "birthday", "wedding"],
@@ -8,6 +9,7 @@ const cardsType = {
 }
 
 const invitationsType = {
+    all:["allInvitations"],
     holiday: ["christmas", "newYear", "easter"],
     birthday: ["kids", "women", "men"],
     wedding: ["invitation", "saveTheDate", "rsvp"],

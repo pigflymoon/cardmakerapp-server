@@ -80,8 +80,8 @@ export default class UploadPanel extends Component {
     }
 
     handleUpload = (e, category, imageType) => {
-        console.log('category is :',category);
-        console.log('imageType is :',imageType);
+        console.log('category is :', category);
+        console.log('imageType is :', imageType);
 
         e.preventDefault();
         console.log('choseFiles length', this.state.choseFiles)
@@ -100,15 +100,16 @@ export default class UploadPanel extends Component {
 
     }
 
-    getDownloadUrl = (uploadImagesRef, dbUpdatedImagesRef, snapshot) => {//db,
-        if (snapshot.downloadURL !== null) {
-            var downloadUrl = snapshot.downloadURL;
+    getDownloadUrl = (uploadImagesRef, dbUpdatedImagesRef, downloadUrl, imageMetaData) => {//db,
+        if (downloadUrl) {
             var newImageKey = uploadImagesRef.push().key;
-            var saveFilename = snapshot.metadata.name;
+            var saveFilename = imageMetaData;
+            console.log('downloadUrl is：', downloadUrl);
 
             dbUpdatedImagesRef.once('value').then((snapshot) => {
                 var updatedChildrenTotal = snapshot.numChildren();
                 console.log('upcated children are :', updatedChildrenTotal);
+                console.log('newImageKey is：', newImageKey);
                 if (updatedChildrenTotal <= 9) {
                     uploadImagesRef.child(newImageKey + '_image').set({
                         downloadUrl: downloadUrl,
@@ -119,6 +120,7 @@ export default class UploadPanel extends Component {
                         name: saveFilename
                     });
                 } else {
+                    console.log('already have 10 children');
                     uploadImagesRef.child(newImageKey + '_image').set({
                         downloadUrl: downloadUrl,
                         name: saveFilename
@@ -128,7 +130,7 @@ export default class UploadPanel extends Component {
                         .then(function (snapshot) {
                             if (snapshot.val()) {
                                 var key = Object.keys(snapshot.val())[0];
-                                console.log('key is :', key,'saved in database');
+                                console.log('key is :', key, 'saved in database');
 
                                 dbUpdatedImagesRef.child(key).remove().then(function () {
                                     dbUpdatedImagesRef.child(newImageKey + '_image').set({
@@ -145,10 +147,11 @@ export default class UploadPanel extends Component {
             });
 
 
-
         } else {
             this.setState({uploading: false, uploadStatus: 'Download url is not ready!'});
         }
+
+
     }
 
     fileUpload = (file, imagesRef, uploadImagesRef, dbUpdatedImagesRef) => {//file,storage,db
@@ -157,21 +160,31 @@ export default class UploadPanel extends Component {
         var task = saveImage(file, filename, imagesRef)
         var self = this;
 
-        console.log('dbUpdatedImagesRef is :',dbUpdatedImagesRef);
+        console.log('dbUpdatedImagesRef is :', dbUpdatedImagesRef);
         task.then(function (snapshot) {
             console.log('snapshot is ', snapshot)
-            self.getDownloadUrl(uploadImagesRef, dbUpdatedImagesRef, snapshot);//category-type-db, updated-db
+            console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+            console.log('File metadata name :', snapshot.metadata.name);
+            var imageMetaData = snapshot.metadata.name;
+            //
+            snapshot.ref.getDownloadURL().then(function (downloadUrl) {
+                console.log('File available at', downloadUrl);
+                self.getDownloadUrl(uploadImagesRef, dbUpdatedImagesRef, downloadUrl, imageMetaData);//category-type-db, updated-db
+
+            }).catch(function (error) {
+                console.error(' could not get download url, error is', error);
+                self.setState({uploading: false, choseFiles: []});
+                self.props.onHandleUploadStatus({open: true, uploading: false, error: 'error'});
+            });
+        }).then(function () {
+            self.setState({
+                uploading: false,
+                uploadStatus: 'Upload is Finished! And save to the database ',
+                choseFiles: []
+            });
+            self.props.onHandleUploadStatus({open: true, uploading: false, error: false});
 
         })
-            .then(function () {
-                self.setState({
-                    uploading: false,
-                    uploadStatus: 'Upload is Finished! And save to the database ',
-                    choseFiles: []
-                });
-                self.props.onHandleUploadStatus({open: true, uploading: false, error: false});
-
-            })
             .catch(function (error) {
                 console.error('error is', error);
                 self.setState({uploading: false, choseFiles: []});
@@ -208,7 +221,7 @@ export default class UploadPanel extends Component {
             uploading,
             uploadStatus
         } = this.state;
-        console.log('imageCategory is :',imageCategory,'activeTab is :',activeTab);
+        console.log('imageCategory is :', imageCategory, 'activeTab is :', activeTab);
         let tabButtonName = activeTab.replace(/([a-z])([A-Z])/g, '$1 $2');
 
         return (

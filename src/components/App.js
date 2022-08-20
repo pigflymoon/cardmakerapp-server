@@ -51,6 +51,8 @@ import AccountPage from '../screens/Account';
 // import AllImagesPage from '../screens/AllImagesPage';
 import withAuthentication from './withAuthentication';
 import * as routes from '../constants/routes';
+import UploadAllCardsPage from "../screens/upload/cards/UploadAllCardsPage";
+import UploadAllInvitationsPage from "../screens/upload/invitations/UploadAllInvitationsPage";
 
 const App = () =>
     <Router>
@@ -60,7 +62,7 @@ const App = () =>
             <hr/>
 
             <Route exact path={routes.UPLOADHOLIDAYINVITATIONSTEMPLATES} component={() => <UploadHolidayInvitationsTemplatesPage/>}/>
-
+            <Route exact path={routes.UPLOADALLCARDS} component={() => <UploadAllCardsPage />}/>
             <Route exact path={routes.UPLOADHOLIDAYCARDS} component={() => <UploadHolidayCardsPage />}/>
             <Route exact path={routes.UPLOADBIRTHDAYCARDS} component={() => <UploadBirthdayCardsPage />}/>
             <Route exact path={routes.UPLOADTHANKYOUCARDS} component={() => <UploadThankYouCardsPage/>}/>
@@ -71,7 +73,7 @@ const App = () =>
 
             <Route exact path={routes.UPLOADTHOUGHTSFEELINGS} component={() => <UploadThoughtsFeelingsCardsPage/>}/>
 
-
+            <Route exact path={routes.UPLOADALLINVITATIONS} component={() => <UploadAllInvitationsPage/>}/>
             <Route exact path={routes.UPLOADHOLIDAYINVITATIONS} component={() => <UploadHolidayInvitationsPage/>}/>
             <Route exact path={routes.UPLOADBIRTHDAYINVITATIONS} component={() => <UploadBirthdayInvitationsPage/>}/>
             <Route exact path={routes.UPLOADWEDDINGINVITATIONS} component={() => <UploadWeddingInvitationsPage/>}/>

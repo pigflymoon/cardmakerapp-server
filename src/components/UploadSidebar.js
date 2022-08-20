@@ -29,6 +29,12 @@ export const uploadGalleryListItems = (
 )
 export const uploadCardsListItems = (
     <div>
+      <ListItem component={Link} to="upload-allCards" button>
+        <ListItemIcon>
+          <StarIcon style={{color:'green'}}/>
+        </ListItemIcon>
+        <ListItemText primary="All Cards"/>
+      </ListItem>
         <ListItem component={Link} to="upload-holidayCards" button>
             <ListItemIcon>
                 <InboxIcon style={{color:'green'}}/>
@@ -70,6 +76,12 @@ export const uploadCardsListItems = (
 
 export const uploadInvitationsListItems = (
     <div>
+      <ListItem component={Link} to="upload-allInvitations" button>
+        <ListItemIcon>
+          <StarIcon style={{color:'blue'}}/>
+        </ListItemIcon>
+        <ListItemText primary="All Invitations"/>
+      </ListItem>
         <ListItem component={Link} to="upload-holidayInvitations" button>
             <ListItemIcon>
                 <MailIcon style={{color:'blue'}}/>
