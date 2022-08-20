@@ -31,8 +31,8 @@ const NavigationAuth = (userAndrole) => {
         <ul>
             <li><Link to={routes.UPLOADHOLIDAYINVITATIONSTEMPLATES}>Upload Templates for invitations</Link></li>
 
-            <li><Link to={routes.UPLOADHOLIDAYCARDS}>Upload images for Cards</Link></li>
-            <li><Link to={routes.UPLOADHOLIDAYINVITATIONS}>Upload images for Invitations</Link></li>
+            <li><Link to={routes.UPLOADALLCARDS}>Upload images for Cards</Link></li>
+            <li><Link to={routes.UPLOADALLINVITATIONS}>Upload images for Invitations</Link></li>
             <li><Link to={routes.UPLOADGALLERY}>Upload images for Sample Gallery</Link></li>
 
             <li><Link to={routes.DELETEHOLIDAYCARDS}>Delete images from Cards list</Link></li>
