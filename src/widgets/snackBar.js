@@ -48,7 +48,7 @@ class SimpleSnackbar extends Component {
                     open={this.state.show}
                     autoHideDuration={6000}
                     onClose={this.handleClose}
-                    SnackbarContentProps={{
+                    ContentProps={{
                         'aria-describedby': 'message-id',
                     }}
                     message={<span id="message-id">Uploading</span>}
