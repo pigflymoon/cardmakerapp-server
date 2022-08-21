@@ -31,7 +31,15 @@ export const getCardsImagesByType = (imageType)=>{
     console.log('imageType',imageType)
     return storage.ref().child('cards/'+imageType)
 }
-export const getImagesByCategoryAndType = (category,imageType)=>{
-    console.log('imageType',imageType,'category',category)
+
+export function uploadForAll(category, imageType) {
+    return (category === "cards" && imageType === "allCards") || (category === "invitations" && imageType === "allInvitations");
+}
+
+export const getStorageImagesRefByCategoryAndType = (category, imageType) => {
+    console.log('imageType', imageType, 'category', category)
+    if (uploadForAll(category, imageType)) {
+        return storage.ref().child(`${imageType}`)
+    }
     return storage.ref().child(`${category}/${imageType}`)
 }

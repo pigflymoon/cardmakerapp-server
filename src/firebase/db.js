@@ -1,12 +1,13 @@
 import {db} from './firebase';
+import {uploadForAll} from "./storage";
 
 //User API
 
 export const doCreateUser = (id, username, email) =>
     db.ref(`users/${id}`).set({
-        username,
-        email,
-        role: {free_user: true, paid_user: false, admin: false}
+      username,
+      email,
+      role: {free_user: true, paid_user: false, admin: false}
     });
 
 export const onceGetUsers = () =>
@@ -62,18 +63,44 @@ export const onceGetOtherImages = () =>
 
 //get image by category and type
 
-export const getImagesRefByTCategoryAndType = (category, imageType) => {
-    console.log('db imageType is ', imageType)
-    return db.ref().child(`${category}/${imageType}`);
+export const getDbImagesRefByTCategoryAndType = (category, imageType) => {
+  console.log('db imageType is ', imageType)
+  /** if no image Type, then it's allCards or allInvitations
+   * /allCards
+   * /allInvitations
+   * otherwise
+   * /cards/***
+   * /invitations/***
+   * **/
+  if (uploadForAll(category, imageType)) {
+    return db.ref().child(`${imageType}`);
+  }
+  return db.ref().child(`${category}/${imageType}`);
+}
+/***
+ * update image to latest images folder or directory
+ * /latestArtList/0/arts  for cards
+ * /latestArtList/1/arts  for invitations
+ * @param category
+ * @returns {firebase.database.Reference}
+ */
+export const getLatestImagesRefByCategoryAndType = (category) => {
+  console.log('latest db imageType is ', category)
+  if (category === "invitations") {
+    return db.ref().child("latestArtList/1/arts")
+  } else {
+    return db.ref().child("latestArtList/0/arts") // for cards and also for default
+  }
+  // return db.ref().child(`latest${category}`);
 }
 
-export const getUpdatedImagesRefByTCategoryAndType = (category) => {
-    console.log('db imageType is ', category)
-    return db.ref().child(`updated${category}`);
+export const getDbUpdatedImagesRefByCategoryAndType = (category) => {
+  console.log('db imageType is ', category)
+  return db.ref().child(`updated${category}`);
 }
 
 
 export const getImagesDataByTCategoryAndType = (category, imageType) => {
-    console.log('db imageType is ', category, imageType)
-    return db.ref().child(`${category}/${imageType}`).once('value');
+  console.log('db imageType is ', category, imageType)
+  return db.ref().child(`${category}/${imageType}`).once('value');
 }

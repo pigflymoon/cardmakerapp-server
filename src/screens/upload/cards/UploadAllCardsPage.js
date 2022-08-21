@@ -22,6 +22,7 @@ import {uploadCardsListItems} from '../../../components/UploadSidebar';
 import {uploadStyles} from '../../../styles/uploadPage';
 
 import UploadPanel from '../../../components/UploadPanel';
+import {CategoryConfig} from "../../../constants/CategoryConfig";
 
 class UploadAllCardsPage extends Component {
     constructor(props) {
@@ -40,7 +41,7 @@ class UploadAllCardsPage extends Component {
     handleChange = (event, value) => {
         this.setState({open: false});
 
-        let tabs = ["allCards", "todo1", "todo2"];
+        let tabs = CategoryConfig.cards.all;
         for (let tab of tabs) {
             let tabValue = tabs[value];
             if (tab == tabValue) {
@@ -121,8 +122,6 @@ class UploadAllCardsPage extends Component {
                                 onChange={this.handleChange}
                             >
                                 <Tab label="All Cards"/>
-                                <Tab label="Todo1"/>
-                                <Tab label="Todo2"/>
                             </Tabs>
 
                         </Paper>

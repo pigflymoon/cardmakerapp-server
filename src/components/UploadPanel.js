@@ -48,7 +48,7 @@ export default class UploadPanel extends Component {
     handleAddImage = (e, imageType) => {
         e.preventDefault();
         var uploadImageType = imageType;
-        console.log('imageType is for ', uploadImageType);
+        console.log('imageType is for==> ', uploadImageType); //allCards
         var choseFiles = e.target.files;
 
         var files = [], imagePreviewUrls = [];
@@ -79,7 +79,7 @@ export default class UploadPanel extends Component {
         this.setState({choseFiles: filesData, imagePreviewUrls: imagesData});
     }
 
-    handleUpload = (e, category, imageType) => {
+    handleUpload = (e, category, imageType) => {// cards, allCards
         console.log('category is :', category);
         console.log('imageType is :', imageType);
 
@@ -100,40 +100,84 @@ export default class UploadPanel extends Component {
 
     }
 
-    getDownloadUrl = (uploadImagesRef, dbUpdatedImagesRef, downloadUrl, imageMetaData) => {//db,
+    getDownloadUrl = (uploadImagesRef, dbUpdatedImagesRef, dbLatestImagesRef, downloadUrl, imageMetaData) => {
         if (downloadUrl) {
             var newImageKey = uploadImagesRef.push().key;
             var saveFilename = imageMetaData;
             console.log('downloadUrl is：', downloadUrl);
 
-            dbUpdatedImagesRef.once('value').then((snapshot) => {
+            // dbUpdatedImagesRef.once('value').then((snapshot) => {
+            //     var updatedChildrenTotal = snapshot.numChildren();
+            //     console.log('upcated children are :', updatedChildrenTotal);
+            //     console.log('newImageKey is：', newImageKey);
+            //     if (updatedChildrenTotal <= 9) {
+            //         uploadImagesRef.child(newImageKey + '_image').set({
+            //             downloadUrl: downloadUrl,
+            //             name: saveFilename
+            //         });
+            //         // dbUpdatedImagesRef.child(newImageKey + '_image').set({
+            //         //     downloadUrl: downloadUrl,
+            //         //     name: saveFilename
+            //         // });
+            //     } else {
+            //         console.log('already have 10 children');
+            //         uploadImagesRef.child(newImageKey + '_image').set({
+            //             downloadUrl: downloadUrl,
+            //             name: saveFilename
+            //         });
+            //         var query = dbUpdatedImagesRef.orderByKey().limitToFirst(1);
+            //         query.once("value")
+            //             .then(function (snapshot) {
+            //                 if (snapshot.val()) {
+            //                     var key = Object.keys(snapshot.val())[0];
+            //                     console.log('key is :', key, 'saved in database');
+            //
+            //                     dbUpdatedImagesRef.child(key).remove().then(function () {
+            //                         dbUpdatedImagesRef.child(newImageKey + '_image').set({
+            //                             downloadUrl: downloadUrl,
+            //                             name: saveFilename
+            //                         });
+            //                     }).catch(function (error) {
+            //                         console.log("Remove failed: " + error.message)
+            //                     });
+            //                 }
+            //             });
+            //     }
+            //
+            // });
+            /** Also upload the image to database latest directory */
+            dbLatestImagesRef.once('value').then((snapshot) => {
                 var updatedChildrenTotal = snapshot.numChildren();
-                console.log('upcated children are :', updatedChildrenTotal);
+                console.log('latest art  children are :', updatedChildrenTotal);
                 console.log('newImageKey is：', newImageKey);
-                if (updatedChildrenTotal <= 9) {
-                    uploadImagesRef.child(newImageKey + '_image').set({
-                        downloadUrl: downloadUrl,
-                        name: saveFilename
-                    });
-                    dbUpdatedImagesRef.child(newImageKey + '_image').set({
+                if (updatedChildrenTotal <= 6) { // show 6 of latest uploaded images
+                    // uploadImagesRef.child(newImageKey + '_image').set({
+                    //     downloadUrl: downloadUrl,
+                    //     name: saveFilename
+                    // });
+                    // dbLatestImagesRef.child(newImageKey + '_image').set({
+                    //     downloadUrl: downloadUrl,
+                    //     name: saveFilename
+                    // });
+                    dbLatestImagesRef.child(updatedChildrenTotal).set({
                         downloadUrl: downloadUrl,
                         name: saveFilename
                     });
                 } else {
                     console.log('already have 10 children');
-                    uploadImagesRef.child(newImageKey + '_image').set({
-                        downloadUrl: downloadUrl,
-                        name: saveFilename
-                    });
-                    var query = dbUpdatedImagesRef.orderByKey().limitToFirst(1);
+                    // uploadImagesRef.child(newImageKey + '_image').set({
+                    //     downloadUrl: downloadUrl,
+                    //     name: saveFilename
+                    // });
+                    var query = dbLatestImagesRef.orderByKey().limitToFirst(1);
                     query.once("value")
                         .then(function (snapshot) {
                             if (snapshot.val()) {
                                 var key = Object.keys(snapshot.val())[0];
                                 console.log('key is :', key, 'saved in database');
 
-                                dbUpdatedImagesRef.child(key).remove().then(function () {
-                                    dbUpdatedImagesRef.child(newImageKey + '_image').set({
+                                dbLatestImagesRef.child(key).remove().then(function () {
+                                    dbLatestImagesRef.child(newImageKey + '_image').set({
                                         downloadUrl: downloadUrl,
                                         name: saveFilename
                                     });
@@ -145,6 +189,7 @@ export default class UploadPanel extends Component {
                 }
 
             });
+            //
 
 
         } else {
@@ -154,13 +199,14 @@ export default class UploadPanel extends Component {
 
     }
 
-    fileUpload = (file, imagesRef, uploadImagesRef, dbUpdatedImagesRef) => {//file,storage,db
+    fileUpload = (file, storageImagesRef, uploadImagesRef, dbUpdatedImagesRef, dbLatestImagesRef) => {//file,storage,db
         var filename = (file.name).match(/^.*?([^\\/.]*)[^\\/]*$/)[1];
 
-        var task = saveImage(file, filename, imagesRef)
+        var task = saveImage(file, filename, storageImagesRef) // handle v2 allCards and allInvitations and v1
         var self = this;
 
         console.log('dbUpdatedImagesRef is :', dbUpdatedImagesRef);
+        console.log('dbLatestImagesRef is :', dbLatestImagesRef);
         task.then(function (snapshot) {
             console.log('snapshot is ', snapshot)
             console.log('Uploaded', snapshot.totalBytes, 'bytes.');
@@ -169,7 +215,9 @@ export default class UploadPanel extends Component {
             //
             snapshot.ref.getDownloadURL().then(function (downloadUrl) {
                 console.log('File available at', downloadUrl);
-                self.getDownloadUrl(uploadImagesRef, dbUpdatedImagesRef, downloadUrl, imageMetaData);//category-type-db, updated-db
+                /** category-type-db, updated-db, latest-db */
+
+                self.getDownloadUrl(uploadImagesRef, dbUpdatedImagesRef, dbLatestImagesRef, downloadUrl, imageMetaData);
 
             }).catch(function (error) {
                 console.error(' could not get download url, error is', error);
@@ -194,15 +242,16 @@ export default class UploadPanel extends Component {
             });
     }
 
-    filesUpload = (files, category, imageType) => {
-        var imagesRef = storage.getImagesByCategoryAndType(category, imageType);
-        var uploadImagesRef = db.getImagesRefByTCategoryAndType(category, imageType);
-        var dbUpdatedImagesRef = db.getUpdatedImagesRefByTCategoryAndType(category);
+    filesUpload = (files, category, imageType) => { // cards, allCards
+        var storageImagesRef = storage.getStorageImagesRefByCategoryAndType(category, imageType);
+        var dbUploadImagesToTypeRef = db.getDbImagesRefByTCategoryAndType(category, imageType);
+        var dbUpdatedImagesRef = db.getDbUpdatedImagesRefByCategoryAndType(category);
+        var dbLatestImagesRef = db.getLatestImagesRefByCategoryAndType(category)
 
 
         if (files) {
             for (let file of files) {
-                this.fileUpload(file, imagesRef, uploadImagesRef, dbUpdatedImagesRef);//every file
+                this.fileUpload(file, storageImagesRef, dbUploadImagesToTypeRef, dbUpdatedImagesRef, dbLatestImagesRef);//every file
             }
         } else {
             console.log('no file')

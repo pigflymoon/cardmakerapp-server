@@ -245,9 +245,9 @@ export default class UploadTemplatePanel extends Component {
     }
 
     filesUpload = (files, category, imageType) => {
-        var imagesRef = storage.getImagesByCategoryAndType(category, imageType);
-        var uploadImagesRef = db.getImagesRefByTCategoryAndType(category, imageType);
-        var dbUpdatedImagesRef = db.getUpdatedImagesRefByTCategoryAndType(category);
+        var imagesRef = storage.getStorageImagesRefByCategoryAndType(category, imageType);
+        var uploadImagesRef = db.getDbImagesRefByTCategoryAndType(category, imageType);
+        var dbUpdatedImagesRef = db.getDbUpdatedImagesRefByCategoryAndType(category);
 
 
         if (files) {

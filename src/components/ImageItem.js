@@ -14,12 +14,12 @@ export default class ImageItem extends Component {
     handleDelete = (category, type, imageId, fileName, url) => {
         console.log('You clicked the delete icon.', imageId, 'fileName is ,', fileName, 'url is ', url); // eslint-disable-line no-alert
 
-        var uploadCardsImagesRef = db.getImagesRefByTCategoryAndType(category, type);
+        var uploadCardsImagesRef = db.getDbImagesRefByTCategoryAndType(category, type);
         var self = this;
         uploadCardsImagesRef.child(imageId).remove().then(function () {//delete image node from database
             alert('The picture of ' + fileName + ', id is ' + imageId + ' is deleted!');
             // Create a reference to the file to delete
-            var desertRef = storage.getImagesByCategoryAndType(category, type).child(fileName);//delete image from storage as well.
+            var desertRef = storage.getStorageImagesRefByCategoryAndType(category, type).child(fileName);//delete image from storage as well.
             // Delete the file
             desertRef.delete().then(function () {
                 // File deleted successfully
@@ -31,7 +31,7 @@ export default class ImageItem extends Component {
         });
         //delete images from updated db
 
-        var updatedCardsImagesRef = db.getUpdatedImagesRefByTCategoryAndType(category);
+        var updatedCardsImagesRef = db.getDbUpdatedImagesRefByCategoryAndType(category);
         // var self = this;
         updatedCardsImagesRef.child(imageId).remove().then(function (res) {//delete image node from database
             if (!res) {
