@@ -106,69 +106,58 @@ export default class UploadPanel extends Component {
             var saveFilename = imageMetaData;
             console.log('downloadUrl is：', downloadUrl);
 
-            // dbUpdatedImagesRef.once('value').then((snapshot) => {
-            //     var updatedChildrenTotal = snapshot.numChildren();
-            //     console.log('upcated children are :', updatedChildrenTotal);
-            //     console.log('newImageKey is：', newImageKey);
-            //     if (updatedChildrenTotal <= 9) {
-            //         uploadImagesRef.child(newImageKey + '_image').set({
-            //             downloadUrl: downloadUrl,
-            //             name: saveFilename
-            //         });
-            //         // dbUpdatedImagesRef.child(newImageKey + '_image').set({
-            //         //     downloadUrl: downloadUrl,
-            //         //     name: saveFilename
-            //         // });
-            //     } else {
-            //         console.log('already have 10 children');
-            //         uploadImagesRef.child(newImageKey + '_image').set({
-            //             downloadUrl: downloadUrl,
-            //             name: saveFilename
-            //         });
-            //         var query = dbUpdatedImagesRef.orderByKey().limitToFirst(1);
-            //         query.once("value")
-            //             .then(function (snapshot) {
-            //                 if (snapshot.val()) {
-            //                     var key = Object.keys(snapshot.val())[0];
-            //                     console.log('key is :', key, 'saved in database');
-            //
-            //                     dbUpdatedImagesRef.child(key).remove().then(function () {
-            //                         dbUpdatedImagesRef.child(newImageKey + '_image').set({
-            //                             downloadUrl: downloadUrl,
-            //                             name: saveFilename
-            //                         });
-            //                     }).catch(function (error) {
-            //                         console.log("Remove failed: " + error.message)
-            //                     });
-            //                 }
-            //             });
-            //     }
-            //
-            // });
+            dbUpdatedImagesRef.once('value').then((snapshot) => {
+                var updatedChildrenTotal = snapshot.numChildren();
+                console.log('upcated children are :', updatedChildrenTotal);
+                console.log('newImageKey is：', newImageKey);
+                if (updatedChildrenTotal <= 9) {
+                    /**  add image to db category directory */
+                    uploadImagesRef.child(newImageKey + '_image').set({
+                        downloadUrl: downloadUrl,
+                        name: saveFilename
+                    });
+                } else {
+                    console.log('already have 10 children');
+                    /**  add image to db category directory */
+                    uploadImagesRef.child(newImageKey + '_image').set({
+                        downloadUrl: downloadUrl,
+                        name: saveFilename
+                    });
+                    /** Also need to update the updated directory by remove the last one and append new image.*/
+                    var query = dbUpdatedImagesRef.orderByKey().limitToFirst(1);
+                    query.once("value")
+                        .then(function (snapshot) {
+                            if (snapshot.val()) {
+                                var key = Object.keys(snapshot.val())[0];
+                                console.log('key is :', key, 'saved in database');
+
+                                dbUpdatedImagesRef.child(key).remove().then(function () {
+                                    dbUpdatedImagesRef.child(newImageKey + '_image').set({
+                                        downloadUrl: downloadUrl,
+                                        name: saveFilename
+                                    });
+                                }).catch(function (error) {
+                                    console.log("Remove failed: " + error.message)
+                                });
+                            }
+                        });
+                }
+
+            });
             /** Also upload the image to database latest directory */
             dbLatestImagesRef.once('value').then((snapshot) => {
                 var updatedChildrenTotal = snapshot.numChildren();
                 console.log('latest art  children are :', updatedChildrenTotal);
                 console.log('newImageKey is：', newImageKey);
                 if (updatedChildrenTotal <= 6) { // show 6 of latest uploaded images
-                    // uploadImagesRef.child(newImageKey + '_image').set({
-                    //     downloadUrl: downloadUrl,
-                    //     name: saveFilename
-                    // });
-                    // dbLatestImagesRef.child(newImageKey + '_image').set({
-                    //     downloadUrl: downloadUrl,
-                    //     name: saveFilename
-                    // });
+                    /**  add image to db latest category directory */
                     dbLatestImagesRef.child(updatedChildrenTotal).set({
                         downloadUrl: downloadUrl,
                         name: saveFilename
                     });
                 } else {
-                    console.log('already have 10 children');
-                    // uploadImagesRef.child(newImageKey + '_image').set({
-                    //     downloadUrl: downloadUrl,
-                    //     name: saveFilename
-                    // });
+                    console.log('already have 6 children');
+                    /** Also need to update the latestArtList directory by remove the first one-old one and append new image.*/
                     var query = dbLatestImagesRef.orderByKey().limitToFirst(1);
                     query.once("value")
                         .then(function (snapshot) {
@@ -177,7 +166,7 @@ export default class UploadPanel extends Component {
                                 console.log('key is :', key, 'saved in database');
 
                                 dbLatestImagesRef.child(key).remove().then(function () {
-                                    dbLatestImagesRef.child(newImageKey + '_image').set({
+                                    dbLatestImagesRef.child(key).set({
                                         downloadUrl: downloadUrl,
                                         name: saveFilename
                                     });
