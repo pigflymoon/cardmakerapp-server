@@ -94,7 +94,7 @@ export const getLatestImagesRefByCategoryAndType = (category) => {
   // return db.ref().child(`latest${category}`);
 }
 
-export const getDbUpdatedImagesRefByCategoryAndType = (category) => {
+export const getVersion1DbUpdatedFolderImagesRefByCategory = (category) => {
   console.log('db imageType is ', category)
   return db.ref().child(`updated${category}`);
 }

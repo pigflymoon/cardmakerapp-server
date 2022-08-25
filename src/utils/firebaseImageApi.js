@@ -12,7 +12,7 @@ export const saveImage = (file, filename, ref) => {
             contentType: file.type
         };
 
-        // Upload file and metadata to the object
+        // Upload file and metadata to the object, save file to storage
         var uploadTask = ref.child(filename).put(file, metadata);
 
         return uploadTask;

@@ -31,7 +31,7 @@ export default class ImageItem extends Component {
         });
         //delete images from updated db
 
-        var updatedCardsImagesRef = db.getDbUpdatedImagesRefByCategoryAndType(category);
+        var updatedCardsImagesRef = db.getVersion1DbUpdatedFolderImagesRefByCategory(category);
         // var self = this;
         updatedCardsImagesRef.child(imageId).remove().then(function (res) {//delete image node from database
             if (!res) {
