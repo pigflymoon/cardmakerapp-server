@@ -16,7 +16,7 @@ const devConfig = {
     storageBucket: "cardmaker-dev.appspot.com",
     messagingSenderId: "588144564200"
 };
-console.log('(process.env.NODE_ENV is ?' ,process.env.NODE_ENV)
+console.log('(process.env.NODE_ENV is ?===========>' ,process.env.NODE_ENV)
 const config = process.env.NODE_ENV === 'production' ? devConfig : devConfig;//prodConfig devConfig
 
 

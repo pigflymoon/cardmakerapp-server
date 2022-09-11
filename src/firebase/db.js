@@ -10,6 +10,16 @@ export const doCreateUser = (id, username, email) =>
       role: {free_user: true, paid_user: false, admin: false}
     });
 
+export const setLatestUpdatedIndex = (lastIndex) => {
+  if (lastIndex < 6) {
+    return db.ref('latestUpdatedIndex').set(lastIndex + 1);
+  } else {
+    return db.ref('latestUpdatedIndex').set(1)
+  }
+
+}
+
+
 export const onceGetUsers = () =>
     db.ref('users').once('value');
 
@@ -99,7 +109,9 @@ export const getVersion1DbUpdatedFolderImagesRefByCategory = (category) => {
   return db.ref().child(`updated${category}`);
 }
 
-
+export const getLastUpdatedIndexRef = () => {
+  return db.ref().child('latestUpdatedIndex')
+}
 export const getImagesDataByTCategoryAndType = (category, imageType) => {
   console.log('db imageType is ', category, imageType)
   return db.ref().child(`${category}/${imageType}`).once('value');

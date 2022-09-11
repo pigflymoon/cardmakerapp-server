@@ -10,6 +10,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {saveImage} from '../utils/firebaseImageApi';
 import {uploadForAll} from "../firebase/storage";
+import {latestUpdatedIndex, setLatestUpdatedIndex} from "../firebase/db";
+import * as getLastUpdatedIndexRef from "prop-types";
 
 
 export default class UploadPanel extends Component {
@@ -169,7 +171,7 @@ export default class UploadPanel extends Component {
       /** Also upload the image to database latest directory */
       dbLatestImagesRef.once('value').then((snapshot) => {
         var updatedChildrenTotal = snapshot.numChildren();
-        if (updatedChildrenTotal <= 6) { // show 6 of latest uploaded images
+        if (updatedChildrenTotal < 6) { // show 6 of latest uploaded images
           /**  add image to db latest category directory */
           dbLatestImagesRef.child(updatedChildrenTotal).set({
             downloadUrl: downloadUrl,
@@ -178,22 +180,27 @@ export default class UploadPanel extends Component {
         } else {
           console.log('already have 6 children');
           /** Also need to update the latestArtList directory by remove the first one-old one and append new image.*/
-          var query = dbLatestImagesRef.orderByKey().limitToFirst(1);
-          query.once("value")
-              .then(function (snapshot) {
-                if (snapshot.val()) {
-                  var key = Object.keys(snapshot.val())[0];
+          db.getLastUpdatedIndexRef().once('value').then((snapshot) => {
+            let lastIndex = snapshot.val()
+            const query = dbLatestImagesRef.orderByKey().limitToFirst(lastIndex);
+            query.once("value")
+                .then(function (snapshot) {
+                  if (snapshot.val()) {
+                    var key = Object.keys(snapshot.val())[lastIndex-1];
 
-                  dbLatestImagesRef.child(key).remove().then(function () {
-                    dbLatestImagesRef.child(key).set({
-                      downloadUrl: downloadUrl,
-                      name: saveFilename
+                    dbLatestImagesRef.child(key).remove().then(function () {
+                      dbLatestImagesRef.child(key).set({
+                        downloadUrl: downloadUrl,
+                        name: saveFilename
+                      });
+                      setLatestUpdatedIndex(lastIndex)
+                    }).catch(function (error) {
+                      console.log("Remove failed: " + error.message)
                     });
-                  }).catch(function (error) {
-                    console.log("Remove failed: " + error.message)
-                  });
-                }
-              });
+                  }
+                });
+          })
+
         }
 
       });
